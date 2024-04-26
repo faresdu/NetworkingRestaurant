@@ -24,9 +24,11 @@ def main():
         while True:
             conn, addr = sock.accept()
             print('socket connected')
-            menu = load_menu('menu.yml')
-            menu = pickle.dumps(menu)
-            conn.sendall(menu)
+            data = conn.recv(4096)
+            if data == 'Customer':
+                menu = load_menu('menu.yml')
+                menu = pickle.dumps(menu)
+                conn.sendall(menu)
         
     except:
         print("eroorrrrrr on server side")
