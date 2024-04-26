@@ -1,54 +1,54 @@
 {
   "Kabsah": {
-    "price": 30,
+    "price": 30.0,
     "quantity": 100
   },
   "Mandi": {
-    "price": 35,
+    "price": 35.0,
     "quantity": 90
   },
   "Madghoot": {
-    "price": 39,
+    "price": 39.0,
     "quantity": 76
   },
   "Bukhary": {
-    "price": 25,
+    "price": 25.0,
     "quantity": 111
   },
   "Jareesh": {
-    "price": 14,
+    "price": 14.0,
     "quantity": 250
   },
   "Qursan": {
-    "price": 15,
+    "price": 15.0,
     "quantity": 243
   },
   "Sambosa": {
-    "price": 6,
+    "price": 6.0,
     "quantity": 432
   },
   "Daqoos": {
-    "price": 3,
+    "price": 3.0,
     "quantity": 500
   },
   "7Up": {
-    "price": 3,
+    "price": 3.0,
     "quantity": 500
   },
   "Pepsi": {
-    "price": 3,
+    "price": 3.0,
     "quantity": 500
   },
   "Miranda": {
-    "price": 3,
+    "price": 3.0,
     "quantity": 500
   },
   "Mountain-Dew": {
-    "price": 3,
+    "price": 3.0,
     "quantity": 500
   },
   "water": {
-    "price": 1,
+    "price": 1.0,
     "quantity": 500
   }
 }

@@ -1,5 +1,5 @@
 import socket
-import yaml
+import json
 import pickle
 
 port = 12388
@@ -8,7 +8,7 @@ ip = 'localhost'
     
 def load_menu(file_path):
     with open(file_path, 'r') as file:
-        menu_data = yaml.safe_load(file)
+        menu_data = json.load(file)
     return menu_data
 
 def main():
@@ -24,11 +24,18 @@ def main():
         while True:
             conn, addr = sock.accept()
             print('socket connected')
-            data = conn.recv(4096)
+            data = conn.recv(1024).decode()
+            print(data)
             if data == 'Customer':
-                menu = load_menu('menu.yml')
+                menu = load_menu('menu.json')
                 menu = pickle.dumps(menu)
                 conn.sendall(menu)
+            elif data == 'Owner':
+                username = 'admin'
+                password = 'admin'
+                
+                
+                
         
     except:
         print("eroorrrrrr on server side")
