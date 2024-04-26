@@ -19,11 +19,12 @@ def main():
     try:
         sock.connect((ip,port))
         print('socket connected')
+        userInterface(sock)
+        data = sock.recv(4096)
+        data = pickle.loads(data)
     except:
         print('eroor on client side')
-    data = sock.recv(4096)
-    data = pickle.loads(data)
-    userInterface(sock)
+   
 
 if __name__ == '__main__':
     main()
