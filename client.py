@@ -1,6 +1,5 @@
 import socket
 import pickle
-import sys
 port = 12388
 ip = 'localhost'
 
@@ -8,39 +7,44 @@ ip = 'localhost'
 
 
 def userInterface(sock):
-    flag = True
-    for i in range(2):
-        print('\033[1;34;40m <#> Welcome to Networant!')
-        print('\033[1;37;40m <#> Please select who are you as shown below:')
-        print('\033[1;33;40m <#> 1- Owner\n<#> 2- Customer\n<#> 3- Exit\n\033[1;37;40m ->', end= ' ')
-        selection = ''
+    
+    while True:
+        print('\033[1;34;40m <#>    Welcome to Networant!')
+        print('\033[1;37;40m<#> Please select who are you as shown below:')
+        print('\033[1;33;40m<#> 1- Owner\n<#> 2- Customer\n<#> 3- Exit\n\033[1;37;40m ->', end= ' ')
         selection = input('->')
         if selection == '1':
             ownerAuth(sock)
         elif selection == '2':
-            sock.sendall(b'Customer,')
             retrieveMenu(sock)
         elif selection == '3':
+            sock.sendall(b'Exit')
             print('<#> Thanks for dealing with Networant, Goodbye!')
-            sock.close()
-            flag = False
+            break
 
 def retrieveMenu(sock):
+    sock.sendall(b'Customer')
+    print('meow2')
     data = sock.recv(1024)
+    print('ss')
     data = pickle.loads(data)
+    print('zz')
     for i,k in data.items():
         print(i,":",k['price'])
     
 
 def ownerAuth(sock):
     try:
+        sock.sendall(b'Owner')
         print('Enter your username:')
-        username = input()
+        username = input('->')
+        sock.sendall(username.encode())
         print('Enter your password:')
-        password = input()
-        x= ''
-        x= 'Owner'+','+username + ',' + password
-        sock.sendall(x.encode())
+        password = input('->')
+        sock.sendall(password.encode())
+        print('Hello dear Owner of Networant!')
+        print('Tell me what do you want to do?')
+        print('1- Add items to the menu\n2- Modify prices or quantity')
     except:
         print("Username or password is not correct.")
 

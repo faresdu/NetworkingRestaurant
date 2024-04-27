@@ -60,25 +60,22 @@ def main():
 
         sock.listen(5)
         print('socket now listening')
+
+        conn, addr = sock.accept()
         while True:
-            conn, addr = sock.accept()
             print('socket connected')
             data = conn.recv(1024).decode()
-            k=data.split(',')
-            print('meow')
-            if k[0] == 'Customer':
-                print('hanzo')
+            if data == 'Customer':
                 menu = load_menu('menu.json')
-                print('d7man')
                 menu = pickle.dumps(menu)
-                print('fares 3mkm')
                 conn.sendall(menu)
-                print('3ziz')
-            elif k[0] == 'Owner':
-                if k[1]=='admin' and k[2]=='admin':
-                    print('Hello dear Owner of Networant!')
-                    print('Tell me what do you want to do?')
-                    print('1- Add items to the menu\n2- Modify prices or quantity')
+
+               
+            elif data == 'Owner':
+                username = conn.recv(1024).decode()
+                password = conn.recv(1024).decode()
+                if username =='admin' and password =='admin':
+                    
                     selection = input('->')
                     if selection == '1':
                         addItem()
@@ -86,8 +83,11 @@ def main():
                         modifyItem()
                 else:
                     print('\033[1;31;40m Username or password is incorrect.')
+            elif data == 'Exit':
+                break
             else:
                 print('howowow')
+            
 
     except:
         print("\033[1;31;40m Error on server side")
