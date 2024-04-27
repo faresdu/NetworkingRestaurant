@@ -40,16 +40,11 @@ def modifyItem():
         print('Item modified successfully!')
     else:
         print('Item not found in the menu.')
-def addItem():
-    addToMenu = load_menu('menu.json')
-    print('What item do you want to add?\n')
-    addedItem = input('->')
-    print('What is the price of the item?\n')
-    itemPrice = input('->')
-    print('What is the quantity of the item?\n')
-    itemQuantity = input('->')
+def addItem(conn):
+    addedItem = conn.recv(1024).decode()
+    itemPrice = conn.recv(1024).decode()
+    itemQuantity = conn.recv(1024).decode()
     addedItemJSON = add_item_to_json('menu.json',addedItem,itemPrice,itemQuantity)
-    print('Item added successfuly!')
 def main():
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -75,10 +70,10 @@ def main():
                 username = conn.recv(1024).decode()
                 password = conn.recv(1024).decode()
                 if username =='admin' and password =='admin':
-                    
-                    selection = input('->')
+                    selection = conn.recv(1024).decode()
                     if selection == '1':
-                        addItem()
+                        addItem(conn)
+                        break
                     elif selection == '2':
                         modifyItem()
                 else:

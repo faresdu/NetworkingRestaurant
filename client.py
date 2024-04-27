@@ -16,6 +16,7 @@ def userInterface(sock):
         if selection == '1':
             ownerAuth(sock)
         elif selection == '2':
+            sock.sendall(b'Customer')
             retrieveMenu(sock)
         elif selection == '3':
             sock.sendall(b'Exit')
@@ -23,15 +24,22 @@ def userInterface(sock):
             break
 
 def retrieveMenu(sock):
-    sock.sendall(b'Customer')
-    print('meow2')
     data = sock.recv(1024)
-    print('ss')
     data = pickle.loads(data)
-    print('zz')
     for i,k in data.items():
         print(i,":",k['price'])
-    
+
+def addItem(sock):
+    print('What item do you want to add?\n')
+    addedItem = input('->')
+    sock.sendall(addedItem.encode())
+    print('What is the price of the item?\n')
+    itemPrice = input('->')
+    sock.sendall(itemPrice.encode())
+    print('What is the quantity of the item?\n')
+    itemQuantity = input('->')
+    sock.sendall(itemQuantity.encode())
+    print('Item added successfuly!')
 
 def ownerAuth(sock):
     try:
@@ -46,6 +54,8 @@ def ownerAuth(sock):
         print('Tell me what do you want to do?')
         print('1- Add items to the menu\n2- Modify prices or quantity')
         selection = input('->')
+        sock.sendall(selection.encode())
+        addItem(sock)
     except:
         print("Username or password is not correct.")
 
