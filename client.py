@@ -31,59 +31,59 @@ def addItem(sock):
     print('\033[1;33;40m<+> What item do you want to add?\u001b[0m\n')
     addedItem = input('->')
     while not addedItem.isalpha():
-        print('\033[1;31;40m<#> Invalid input! Please enter only letters.\u001b[0m')
+        print('\033[1;31;40m<-> Invalid input! Please enter only letters.\u001b[0m')
         addedItem = input('->')
     
     sock.sendall(addedItem.encode())
     print('\033[1;33;40m<+> What is the price of the item?\u001b[0m\n')
     itemPrice = input('->')
     while not itemPrice.isdigit():
-        print('\033[1;31;40m<#> Invalid input! Please enter only integers.\u001b[0m')
+        print('\033[1;31;40m<-> Invalid input! Please enter only integers.\u001b[0m')
         itemPrice = input('->')
     sock.sendall(itemPrice.encode())
 
     print('\033[1;33;40m<+> What is the quantity of the item?\u001b[0m\n')
     itemQuantity = input('->')
     while not itemQuantity.isdigit():
-        print('\033[1;31;40m<#> Invalid input! Please enter only integers.\u001b[0m')
+        print('\033[1;31;40m<-> Invalid input! Please enter only integers.\u001b[0m')
         itemQuantity = input('->')
     sock.sendall(itemQuantity.encode())
-    print('<#> Item added successfuly!')\
+    print('\033[1;37;40m<#> Item added successfuly!')
 
 def deleteItem(sock):
-    print('What item do you want to delete?\n')
+    print('\033[1;33;40m<+> What item do you want to delete?\u001b[0m\n')
     deletedItem = input('->')
     sock.sendall(deletedItem.encode())
     respond = sock.recv(1024).decode()
     if respond=='1':
-        print('item deleted successfully')
+        print('\033[1;37;40m<#> item deleted successfully\u001b[0m')
     elif respond=='0':
-        print('item not found, nothing has been deleted')
+        print('\033[1;31;40m<-> item not found, nothing has been deleted\u001b[0m')
         
 def modifyItem(sock):
     print('\033[1;33;40m<+> What item do you want to modify?\u001b[0m\n')
     modifiedItem = input('->')
     while not modifiedItem.isalpha():
-        print('\033[1;31;40m<#> Invalid input! Please enter only letters.\u001b[0m')
+        print('\033[1;31;40m<-> Invalid input! Please enter only letters.\u001b[0m')
         modifiedItem = input('->')
     sock.sendall(modifiedItem.encode())
 
     print('\033[1;33;40m<+> What is the new price of the item?\u001b[0m\n')
     newPrice = input('->')
     while not newPrice.isdigit():
-        print('\033[1;31;40m<#> Invalid input! Please enter only integers.\u001b[0m')
+        print('\033[1;31;40m<-> Invalid input! Please enter only integers.\u001b[0m')
         newPrice = input('->')
     sock.sendall(newPrice.encode())
 
     print('\033[1;33;40m<+> What is the new quantity of the item?\u001b[0m\n')
     newQuantity = input('->')
     while not newQuantity.isdigit():
-        print('\033[1;31;40m<#> Invalid input! Please enter only integers.\u001b[0m')
+        print('\033[1;31;40m<-> Invalid input! Please enter only integers.\u001b[0m') 
         newQuantity = input('->')
     sock.sendall(newQuantity.encode())
     ackClient = sock.recv(1024).decode()
     if ackClient == '1':
-        print('\033[1;32;40m<#> Item modified successfully!\u001b[0m\n')
+        print('\033[1;37;40m<#> Item modified successfully!\u001b[0m\n')
     elif ackClient == '0':
         print('\033[1;31;40m<-> Something is wrong\u001b[0m')
 
@@ -97,21 +97,21 @@ def customerAuth(sock):
         match=True
         while loop != 'y':
             match = False
-            print("enter your order: ", end=' ')
+            print("\033[1;33;40m<+> enter your order:\u001b[0m", end=' ')
             cusOrder = input()
             for a in dict(menuu).keys():
                 if a.lower() == cusOrder.lower():
                     match=True
             if match == False:
-                print("There is no",cusOrder)
+                print("\033[1;31;40m<-> There is no\u001b[0m",cusOrder)
                 continue
 
-            print("Enter the quantity: ", end=' ')
+            print("\033[1;33;40m<+> Enter the quantity:\u001b[0m", end=' ')
             cusQuan = input()
             meals += cusOrder + ','
             quantity += cusQuan + ','
             print(meals)
-            print("did you finish(y/n)", end=' ')
+            print("\033[1;33;40m<+> did you finish(y/n)\u001b[0m", end=' ')
             loop = input()
 
 
@@ -123,11 +123,11 @@ def customerAuth(sock):
         if totalBill=='Diclined':
             diclinedOrder=sock.recv(1024).decode()
             diclinedOrderQuan = sock.recv(1024).decode()
-            print("The", diclinedOrder, "Avaliable is" ,diclinedOrderQuan)
-            print("Do you want to order this meal?(y/n): ", end="")
+            print("\033[1;37;40m<#> The\u001b[0m", diclinedOrder, "\033[1;37;40m Avaliable is\u001b[0m" ,diclinedOrderQuan)
+            print("\033[1;37;40m<#> Do you want to order this meal?(y/n): \u001b[0m", end="")
             ans = input()
             if ans =="y":
-                print("How much Quantity: ", end="")
+                print("\033[1;33;40m<+> How much Quantity: \u001b[0m", end="")
                 anq = input()
                 sock.sendall(b"y")
                 sock.sendall(anq.encode())
@@ -138,29 +138,29 @@ def customerAuth(sock):
 
 
 
-        print("your Bill is", totalBill, 'SAR')
-        print("Do you confirm your order(y/n)", end=' ')
+        print("\033[1;37;40m<#> your Bill is\u001b[0m", totalBill, '\033[1;37;40m SAR\u001b[0m')
+        print("\033[1;33;40m<+> Do you confirm your order(y/n)\u001b[0m", end=' ')
         confirm = input()
         if confirm == 'y':
-            print("Put your address: ", end=' ')
+            print("\033[1;33;40m<+> Put your address: \u001b[0m", end=' ')
             addr = input()
             sock.sendall(b'1')
             sock.sendall(addr.encode())
             ACK = sock.recv(1024).decode()
             if ACK == '1':
-                print("Your order has been accepted by the restaurant")
+                print("\033[1;37;40m<#> Your order has been accepted by the restaurant\u001b[0m")
 
 
 
     except:
-        print('\033[1;31;40mThere is a problem.\u001b[0m',str(e))   
+        print('\033[1;37;40m<#> There is a problem.\u001b[0m',str(e))   
         
 
 def retrieveMenu(sock):
     data = sock.recv(1024)
     data = pickle.loads(data)
-    print('===============================')
-    print('= meals             price(SAR)=')
+    print('\033[1;37;40m =============================== \u001b[0m')
+    print('\033[1;37;40m = meals             price(SAR)= \u001b[0m')
     for i,k in data.items():
         print('=',i,end='')
         for l in range(0,18-len(str(i))):
@@ -169,8 +169,8 @@ def retrieveMenu(sock):
         for l in range(0, 10 - len(str(k['price']))):
             print(end=' ')
 
-        print("=")
-    print('===============================')
+        print("\033[1;37;40m = \u001b[0m")
+    print('\033[1;37;40m =============================== \u001b[0m')
     return data
 
 def ownerAuth(sock):
