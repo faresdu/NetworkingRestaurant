@@ -45,6 +45,7 @@ def ownerAuth(sock):
         print('Hello dear Owner of Networant!')
         print('Tell me what do you want to do?')
         print('1- Add items to the menu\n2- Modify prices or quantity')
+        selection = input('->')
     except:
         print("Username or password is not correct.")
 
