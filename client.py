@@ -96,7 +96,7 @@ def ownerAuth(sock):
             flag = False
             while not flag:
                 print('\033[1;37;40m<#> Tell me what do you want to do?\u001b[0m')
-                print("\033[1;33;40m<+> 1- Add items to the menu\n<+> 2- Modify prices or quantity\n<+> -3 Exit owner's menu \u001b[0m")
+                print("\033[1;33;40m<+> 1- Add items to the menu\n<+> 2- Modify prices or quantity\n<+> 3- Exit owner's menu \u001b[0m")
                 selection = input('->')
                 sock.sendall(selection.encode())
                 if selection == '1':
