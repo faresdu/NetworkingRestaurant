@@ -91,14 +91,19 @@ def ownerAuth(sock):
         ackClient = sock.recv(1024).decode()
         if ackClient == '1':
             print('Hello dear Owner of Networant!')
-            print('Tell me what do you want to do?')
-            print('1- Add items to the menu\n2- Modify prices or quantity')
-            selection = input('->')
-            sock.sendall(selection.encode())
-            if selection == '1':
-                addItem(sock)
-            elif selection == '2':
-                modifyItem(sock)
+            flag = False
+            while not flag:
+                print('Tell me what do you want to do?')
+                print("1- Add items to the menu\n2- Modify prices or quantity\n-3 Exit owner's menu")
+                selection = input('->')
+                sock.sendall(selection.encode())
+                if selection == '1':
+                    addItem(sock)
+                elif selection == '2':
+                    modifyItem(sock)
+                elif selection == '3':
+                    flag = False
+                    break
         elif ackClient == '0':
             print('Username or password is incorrect.')
     except Exception as e:
