@@ -48,13 +48,13 @@ def main():
         print('socket initiated')
 
         sock.bind((ip,port))
-        print('socket binded')
+        print('\033[1;35;40msocket binded\u001b[0m')
 
         sock.listen(5)
-        print('socket now listening')
+        print('\033[1;35;40msocket now listening\u001b[0m')
 
         conn, addr = sock.accept()
-        print('socket connected')
+        print('\033[1;35;40msocket connected\u001b[0m')
         while True:
             
             data = conn.recv(1024).decode()
@@ -78,11 +78,12 @@ def main():
                 else:
                     ACK = '0'
                     conn.sendall(ACK.encode())
-                    print('\033[1;31;40m Username or password is incorrect.')
+                    print('\033[1;31;40m Username or password is incorrect.\u001b[0m\n')
             elif data == 'Exit':
                 break
             else:
-                print('howowow')
+                ACK = '-1'
+                conn.sendall(ACK.encode())
             
 
     except:

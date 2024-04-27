@@ -9,9 +9,9 @@ ip = 'localhost'
 def userInterface(sock):
     
     while True:
-        print('\033[1;34;40m <#>    Welcome to Networant!')
+        print('\033[1;34;40m <#>    Welcome to Networant! \u001b[0m')
         print('\033[1;37;40m<#> Please select who are you as shown below:')
-        print('\033[1;33;40m<#> 1- Owner\n<#> 2- Customer\n<#> 3- Exit\n\033[1;37;40m ->', end= ' ')
+        print('\033[1;33;40m<+> 1- Owner\n<+> 2- Customer\n<+> 3- Exit\n\033[1;37;40m ->', end= ' ')
         selection = input('->')
         if selection == '1':
             sock.sendall(b'Owner')
@@ -21,8 +21,10 @@ def userInterface(sock):
             retrieveMenu(sock)
         elif selection == '3':
             sock.sendall(b'Exit')
-            print('<#> Thanks for dealing with Networant, Goodbye!')
+            print('\033[1;34;40m<#> Thanks for dealing with Networant, Goodbye!\u001b[0m')
             break
+        else:
+            print('\033[1;31;40m<-> Please enter a viable choice as shown above.\u001b[0m')
 
 def retrieveMenu(sock):
     data = sock.recv(1024)
@@ -31,70 +33,70 @@ def retrieveMenu(sock):
         print(i,":",k['price'])
 
 def addItem(sock):
-    print('What item do you want to add?\n')
+    print('\033[1;33;40m<+> What item do you want to add?\u001b[0m\n')
     addedItem = input('->')
     while not addedItem.isalpha():
-        print('Invalid input! Please enter only letters.')
+        print('\033[1;31;40m<#> Invalid input! Please enter only letters.\u001b[0m')
         addedItem = input('->')
     sock.sendall(addedItem.encode())
 
-    print('What is the price of the item?\n')
+    print('\033[1;33;40m<+> What is the price of the item?\u001b[0m\n')
     itemPrice = input('->')
     while not itemPrice.isdigit():
-        print('Invalid input! Please enter only integers.')
+        print('\033[1;31;40m<#> Invalid input! Please enter only integers.\u001b[0m')
         itemPrice = input('->')
     sock.sendall(itemPrice.encode())
 
-    print('What is the quantity of the item?\n')
+    print('\033[1;33;40m<+> What is the quantity of the item?\u001b[0m\n')
     itemQuantity = input('->')
     while not itemQuantity.isdigit():
-        print('Invalid input! Please enter only integers.')
+        print('\033[1;31;40m<#> Invalid input! Please enter only integers.\u001b[0m')
         itemQuantity = input('->')
     sock.sendall(itemQuantity.encode())
-    print('Item added successfuly!')
+    print('<#> Item added successfuly!')
 
 def modifyItem(sock):
-    print('What item do you want to modify?\n')
+    print('\033[1;33;40m<+> What item do you want to modify?\u001b[0m\n')
     modifiedItem = input('->')
     while not modifiedItem.isalpha():
-        print('Invalid input! Please enter only letters.')
+        print('\033[1;31;40m<#> Invalid input! Please enter only letters.\u001b[0m')
         modifiedItem = input('->')
     sock.sendall(modifiedItem.encode())
 
-    print('What is the new price of the item?\n')
+    print('\033[1;33;40m<+> What is the new price of the item?\u001b[0m\n')
     newPrice = input('->')
     while not newPrice.isdigit():
-        print('Invalid input! Please enter only integers.')
+        print('\033[1;31;40m<#> Invalid input! Please enter only integers.\u001b[0m')
         newPrice = input('->')
     sock.sendall(newPrice.encode())
 
-    print('What is the new quantity of the item?\n')
+    print('\033[1;33;40m<+> What is the new quantity of the item?\u001b[0m\n')
     newQuantity = input('->')
     while not newQuantity.isdigit():
-        print('Invalid input! Please enter only integers.')
+        print('\033[1;31;40m<#> Invalid input! Please enter only integers.\u001b[0m')
         newQuantity = input('->')
     sock.sendall(newQuantity.encode())
     ackClient = sock.recv(1024).decode()
     if ackClient == '1':
-        print('Item modified successfully!')
+        print('\033[1;32;40m<#> Item modified successfully!\u001b[0m\n')
     elif ackClient == '0':
-        print('Something is wrong')
+        print('\033[1;31;40m<-> Something is wrong\u001b[0m')
 
 def ownerAuth(sock):
     try:
-        print('Enter your username:')
+        print('\033[1;33;40m<+> Enter your username:\u001b[0m')
         username = input('->')
         sock.sendall(username.encode())
-        print('Enter your password:')
+        print('\033[1;33;40m<+> Enter your password:\u001b[0m')
         password = input('->')
         sock.sendall(password.encode())
         ackClient = sock.recv(1024).decode()
         if ackClient == '1':
-            print('Hello dear Owner of Networant!')
+            print('\033[1;34;40m<#> Hello dear Owner of Networant!\u001b[0m')
             flag = False
             while not flag:
-                print('Tell me what do you want to do?')
-                print("1- Add items to the menu\n2- Modify prices or quantity\n-3 Exit owner's menu")
+                print('\033[1;37;40m<#> Tell me what do you want to do?\u001b[0m')
+                print("\033[1;33;40m<+> 1- Add items to the menu\n<+> 2- Modify prices or quantity\n<+> -3 Exit owner's menu \u001b[0m")
                 selection = input('->')
                 sock.sendall(selection.encode())
                 if selection == '1':
@@ -105,20 +107,20 @@ def ownerAuth(sock):
                     flag = False
                     break
         elif ackClient == '0':
-            print('Username or password is incorrect.')
+            print('\033[1;31;40m<-> Username or password is incorrect.\u001b[0m')
     except Exception as e:
-        print("Username or password is not correcttt.",str(e))
+        print("\033[1;31;40m<->Username or password is not correct2.\u001b[0m",str(e))
 
 def main():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    print('socket initiated')
+    print('\033[1;35;40m<#> socket initiated')
 
     try:
         sock.connect((ip,port))
-        print('socket connected')
+        print('\033[1;35;40m<#> socket connected\u001b[0m')
         userInterface(sock)
     except Exception as e:
-        print('Error on client side:', str(e))
+        print('\033[1;31;40m<-> Error on client side:\u001b[0m', str(e))
 
 
 if __name__ == '__main__':

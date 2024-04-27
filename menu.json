@@ -58,5 +58,9 @@
     "asd": {
         "price": "23",
         "quantity": "32"
+    },
+    "frfsh": {
+        "price": "12",
+        "quantity": "21"
     }
 }
