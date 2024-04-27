@@ -70,6 +70,8 @@ def main():
                 username = conn.recv(1024).decode()
                 password = conn.recv(1024).decode()
                 if username =='admin' and password =='admin':
+                    ACK = '1'
+                    conn.sendall(ACK.encode())
                     selection = conn.recv(1024).decode()
                     if selection == '1':
                         addItem(conn)
@@ -77,6 +79,8 @@ def main():
                     elif selection == '2':
                         modifyItem()
                 else:
+                    ACK = '0'
+                    conn.sendall(ACK.encode())
                     print('\033[1;31;40m Username or password is incorrect.')
             elif data == 'Exit':
                 break

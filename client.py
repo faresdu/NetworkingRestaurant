@@ -50,14 +50,18 @@ def ownerAuth(sock):
         print('Enter your password:')
         password = input('->')
         sock.sendall(password.encode())
-        print('Hello dear Owner of Networant!')
-        print('Tell me what do you want to do?')
-        print('1- Add items to the menu\n2- Modify prices or quantity')
-        selection = input('->')
-        sock.sendall(selection.encode())
-        addItem(sock)
+        ackClient = sock.recv(1024).decode()
+        if ackClient == '1':
+            print('Hello dear Owner of Networant!')
+            print('Tell me what do you want to do?')
+            print('1- Add items to the menu\n2- Modify prices or quantity')
+            selection = input('->')
+            sock.sendall(selection.encode())
+            addItem(sock)
+        elif ackClient == '0':
+            print('Username or password is incorrect.')
     except:
-        print("Username or password is not correct.")
+        print("Username or password is not correcttt.")
 
 def main():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
