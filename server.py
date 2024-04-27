@@ -113,7 +113,6 @@ def main():
                 ACK = conn.recv(1024).decode()
                 if ACK == '1':
                     addr = conn.recv(1024).decode()
-                    print("hna")
                     c = 0
                     for i in range(len(ListOrders)):
                         NewQuantity = int(menu[ListOrders[i]]["quantity"]) - int(ListQuantity[i])

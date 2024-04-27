@@ -127,11 +127,14 @@ def customerAuth(sock):
             print("\033[1;37;40m<#> Do you want to order this meal?(y/n): \u001b[0m", end="")
             ans = input()
             if ans =="y":
-                print("\033[1;33;40m<+> How much Quantity: \u001b[0m", end="")
-                anq = input()
-                sock.sendall(b"y")
-                sock.sendall(anq.encode())
-                totalBill = sock.recv(1024).decode()
+                    print("How much Quantity: ", end="")
+                    anq = input("-> ")
+                    while anq>diclinedOrderQuan:
+                        print("How much Quantity(Enter less than)",diclinedOrderQuan,": ", end="")
+                        anq = input()
+                    sock.sendall(b"y")
+                    sock.sendall(anq.encode())
+                    totalBill = sock.recv(1024).decode()
             elif ans=='n':
                 sock.sendall(b'n')
                 totalBill = sock.recv(1024).decode()
