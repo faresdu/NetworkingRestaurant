@@ -20,31 +20,28 @@ def add_item_to_json(file_path, item_name, item_price, item_quantity):
 
     with open(file_path, 'w') as file:
         json.dump(data, file, indent=4)
-def modifyItem():
+def modifyItem(conn):
     menu_data = load_menu('menu.json')
-    print('What item do you want to modify?\n')
-    modifiedItem = input('->')
-
+    modifiedItem = conn.recv(1024).decode() 
     if modifiedItem in menu_data:
-        print('What is the new price of the item?\n')
-        newPrice = input('->')
-        print('What is the new quantity of the item?\n')
-        newQuantity = input('->')
-
+        ACK = '1'
+        newPrice = conn.recv(1024).decode()
+        newQuantity = conn.recv(1024).decode()
         menu_data[modifiedItem]['price'] = newPrice
         menu_data[modifiedItem]['quantity'] = newQuantity
 
         with open('menu.json', 'w') as file:
             json.dump(menu_data, file)
-
-        print('Item modified successfully!')
+        conn.sendall(ACK.encode())
+        
     else:
-        print('Item not found in the menu.')
+        ACK = '0'
+        conn.sendall(ACK.encode())
 def addItem(conn):
     addedItem = conn.recv(1024).decode()
     itemPrice = conn.recv(1024).decode()
     itemQuantity = conn.recv(1024).decode()
-    addedItemJSON = add_item_to_json('menu.json',addedItem,itemPrice,itemQuantity)
+    add_item_to_json('menu.json',addedItem,itemPrice,itemQuantity)
 def main():
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -57,8 +54,9 @@ def main():
         print('socket now listening')
 
         conn, addr = sock.accept()
+        print('socket connected')
         while True:
-            print('socket connected')
+            
             data = conn.recv(1024).decode()
             if data == 'Customer':
                 menu = load_menu('menu.json')
@@ -75,9 +73,8 @@ def main():
                     selection = conn.recv(1024).decode()
                     if selection == '1':
                         addItem(conn)
-                        break
                     elif selection == '2':
-                        modifyItem()
+                        modifyItem(conn)
                 else:
                     ACK = '0'
                     conn.sendall(ACK.encode())
