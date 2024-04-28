@@ -97,7 +97,7 @@ def customerAuth(sock):
         match=True
         while loop != 'y':
             match = False
-            print("enter your order: ", end=' ')
+            print("Enter your order: ", end=' ')
             cusOrder = input()
             for a in dict(menuu).keys():
                 if a.lower() == cusOrder.lower():
@@ -123,15 +123,18 @@ def customerAuth(sock):
         if totalBill=='Diclined':
             diclinedOrder=sock.recv(1024).decode()
             diclinedOrderQuan = sock.recv(1024).decode()
-            print("The", diclinedOrder, "Avaliable is" ,diclinedOrderQuan)
+            print(f"The{diclinedOrder}Avaliable is{diclinedOrderQuan}")
             print("Do you want to order this meal?(y/n): ", end="")
             ans = input()
             if ans =="y":
-                print("How much Quantity: ", end="")
-                anq = input()
-                sock.sendall(b"y")
-                sock.sendall(anq.encode())
-                totalBill = sock.recv(1024).decode()
+                    print("How much Quantity: ", end="")
+                    anq = input("-> ")
+                    while anq>diclinedOrderQuan:
+                        print("How much Quantity(Enter less than)",diclinedOrderQuan,": ", end="")
+                        anq = input()
+                    sock.sendall(b"y")
+                    sock.sendall(anq.encode())
+                    totalBill = sock.recv(1024).decode()
             elif ans=='n':
                 sock.sendall(b'n')
                 totalBill = sock.recv(1024).decode()
