@@ -18,8 +18,8 @@ def add_item_to_json(file_path, item_name, item_price, item_quantity):
         "quantity": item_quantity
     }
 
-    with open(file_path, 'w') as file:
-        json.dump(data, file, indent=4)
+    update_menu(file_path,data)
+
 def modifyItem(conn):
     menu_data = load_menu('menu.json')
     modifiedItem = conn.recv(1024).decode() 
@@ -42,10 +42,27 @@ def addItem(conn):
     itemPrice = conn.recv(1024).decode()
     itemQuantity = conn.recv(1024).decode()
     add_item_to_json('menu.json',addedItem,itemPrice,itemQuantity)
+def deleteItem(conn):
+    menu = load_menu('menu.json')
+    deletedItem = conn.recv(1024).decode()
+    if deletedItem in menu:
+        print('z8')
+        ack='1'
+        del menu[deletedItem]
+        update_menu('menu.json',menu)
+        conn.sendall(ack.encode())
+    else:
+        print('5ra')
+        ack='0'
+        conn.sendall(ack.encode())
+
+def update_menu(file_path,data):
+     with open(file_path, 'w') as file: 
+         json.dump(data, file,indent=4)
 def main():
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        print('socket initiated')
+        print('\033[1;35;40msocket initiated\u001b[0m')
 
         sock.bind((ip,port))
         print('\033[1;35;40msocket binded\u001b[0m')
@@ -75,6 +92,8 @@ def main():
                         addItem(conn)
                     elif selection == '2':
                         modifyItem(conn)
+                    elif selection == '3':
+                        deleteItem(conn)
                 else:
                     ACK = '0'
                     conn.sendall(ACK.encode())

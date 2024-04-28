@@ -53,8 +53,21 @@ def addItem(sock):
         print('\033[1;31;40m<#> Invalid input! Please enter only integers.\u001b[0m')
         itemQuantity = input('->')
     sock.sendall(itemQuantity.encode())
-    print('<#> Item added successfuly!')
+    print('<#> Item added successfuly!')\
 
+def deleteItem(sock):
+    try:
+        print('What item do you want to delete?\n')
+        deletedItem = input('->')
+        sock.sendall(deletedItem.encode())
+        respond = sock.recv(1024).decode()
+        if respond=='1':
+            print('item deleted successfully')
+        elif respond=='0':
+            print('item not found, nothing has been deleted')
+    except Exception as e:
+        print('Problem',str(e))
+        
 def modifyItem(sock):
     print('\033[1;33;40m<+> What item do you want to modify?\u001b[0m\n')
     modifiedItem = input('->')
@@ -96,7 +109,7 @@ def ownerAuth(sock):
             flag = False
             while not flag:
                 print('\033[1;37;40m<#> Tell me what do you want to do?\u001b[0m')
-                print("\033[1;33;40m<+> 1- Add items to the menu\n<+> 2- Modify prices or quantity\n<+> -3 Exit owner's menu \u001b[0m")
+                print("\033[1;33;40m<+> 1- Add items to the menu\n<+> 2- Modify prices or quantity\n<+> 3- Delete an item \n<+> 4- Exit owner's menu \u001b[0m")
                 selection = input('->')
                 sock.sendall(selection.encode())
                 if selection == '1':
@@ -104,6 +117,8 @@ def ownerAuth(sock):
                 elif selection == '2':
                     modifyItem(sock)
                 elif selection == '3':
+                    deleteItem(sock)
+                elif selection == '4':
                     flag = False
                     break
         elif ackClient == '0':
