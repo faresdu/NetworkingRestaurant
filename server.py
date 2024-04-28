@@ -14,8 +14,8 @@ def add_item_to_json(file_path, item_name, item_price, item_quantity):
  
     data =load_menu('menu.json')
     data[item_name] = {
-        "price": item_price,
-        "quantity": item_quantity
+        "price": int(item_price),
+        "quantity": int(item_quantity)
     }
 
     update_menu(file_path,data)
@@ -27,11 +27,10 @@ def modifyItem(conn):
         ACK = '1'
         newPrice = conn.recv(1024).decode()
         newQuantity = conn.recv(1024).decode()
-        menu_data[modifiedItem]['price'] = newPrice
-        menu_data[modifiedItem]['quantity'] = newQuantity
+        menu_data[modifiedItem]['price'] = int(newPrice)
+        menu_data[modifiedItem]['quantity'] = int(newQuantity)
 
-        with open('menu.json', 'w') as file:
-            json.dump(menu_data, file)
+        update_menu('menu.json',menu_data)
         conn.sendall(ACK.encode())
         
     else:
@@ -46,13 +45,11 @@ def deleteItem(conn):
     menu = load_menu('menu.json')
     deletedItem = conn.recv(1024).decode()
     if deletedItem in menu:
-        print('z8')
         ack='1'
         del menu[deletedItem]
         update_menu('menu.json',menu)
         conn.sendall(ack.encode())
     else:
-        print('5ra')
         ack='0'
         conn.sendall(ack.encode())
 
@@ -79,25 +76,73 @@ def main():
                 menu = load_menu('menu.json')
                 menu = pickle.dumps(menu)
                 conn.sendall(menu)
+                Order = conn.recv(1024).decode()
+                Quantity = conn.recv(1024).decode()
+                ListOrders = Order.split(',')
+                ListQuantity = Quantity.split(',')
+                ListOrders.remove('')
+                ListQuantity.remove('')
+                totalBill = 0
+                menu = load_menu('menu.json')
+                Diclined=False
+
+                for i in range(0,len(ListOrders)):
+                    Diclined = False
+                    if int(menu[ListOrders[i]]["quantity"]) < int(ListQuantity[i]):
+                        Diclined=True
+                        if Diclined:
+                            conn.sendall(b'Diclined')
+                            conn.sendall(str(ListOrders[i]).encode())
+                            conn.sendall(str(menu[ListOrders[i]]["quantity"]).encode())
+
+                            ans = conn.recv(1024).decode()
+                            if ans == 'y':
+                                modQuantity=conn.recv(1024).decode()
+                                ListQuantity[i]=modQuantity
+                                totalBill += (int(ListQuantity[i]) * int(menu[ListOrders[i]]['price']))
+                            elif ans=='n':
+                                ListQuantity[i]=0
+                    else:
+                        totalBill += (int(ListQuantity[i]) * int(menu[ListOrders[i]]['price']))
+
+
+
+
+
+                conn.sendall(str(totalBill).encode())
+                ACK = conn.recv(1024).decode()
+                if ACK == '1':
+                    addr = conn.recv(1024).decode()
+                    print("hna")
+                    c = 0
+                    for i in range(len(ListOrders)):
+                        NewQuantity = int(menu[ListOrders[i]]["quantity"]) - int(ListQuantity[i])
+                        menu[ListOrders[i]]["quantity"] = NewQuantity
+                    conn.sendall(b'1')
+                    with open('menu.json', 'w') as file:
+                        json.dump(menu, file)
 
                
             elif data == 'Owner':
                 username = conn.recv(1024).decode()
                 password = conn.recv(1024).decode()
                 if username =='admin' and password =='admin':
-                    ACK = '1'
-                    conn.sendall(ACK.encode())
-                    selection = conn.recv(1024).decode()
-                    if selection == '1':
-                        addItem(conn)
-                    elif selection == '2':
-                        modifyItem(conn)
-                    elif selection == '3':
-                        deleteItem(conn)
+                    
+                    while True:
+                        ACK = '1'
+                        conn.sendall(ACK.encode())
+                        selection = conn.recv(1024).decode()
+                        if selection == '1':
+                            addItem(conn)
+                        elif selection == '2':
+                            modifyItem(conn)
+                        elif selection == '3':
+                            deleteItem(conn)
+                        elif selection == '4':
+                            break
                 else:
                     ACK = '0'
                     conn.sendall(ACK.encode())
-                    print('\033[1;31;40m Username or password is incorrect.\u001b[0m\n')
             elif data == 'Exit':
                 break
             else:
