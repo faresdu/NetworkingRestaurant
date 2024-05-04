@@ -1,7 +1,7 @@
 import socket
 import json
 import pickle
-
+import time
 port = 12388
 ip = 'localhost'
 
@@ -76,40 +76,49 @@ def main():
                 menu = load_menu('menu.json')
                 menu = pickle.dumps(menu)
                 conn.sendall(menu)
+
                 Order = conn.recv(1024).decode()
+                print(Order)
                 Quantity = conn.recv(1024).decode()
                 ListOrders = Order.split(',')
                 ListQuantity = Quantity.split(',')
+                print(ListOrders)
                 ListOrders.remove('')
                 ListQuantity.remove('')
-                totalBill = 0
-                menu = load_menu('menu.json')
-                Diclined=False
 
-                for i in range(0,len(ListOrders)):
+                print("ant 3la algadh")
+                totalBill = 0
+                print("k1")
+                menu = load_menu('menu.json')
+                Diclined = False
+                conn.sendall(b'Loop')
+                for i in range(0, len(ListOrders)):
                     Diclined = False
                     if int(menu[ListOrders[i]]["quantity"]) < int(ListQuantity[i]):
-                        Diclined=True
+                        Diclined = True
                         if Diclined:
-                            conn.sendall(b'Diclined')
+                            conn.sendall(b'0')
+                            time.sleep(0.2)
                             conn.sendall(str(ListOrders[i]).encode())
                             conn.sendall(str(menu[ListOrders[i]]["quantity"]).encode())
+                            print('ddd')
 
                             ans = conn.recv(1024).decode()
+
                             if ans == 'y':
-                                modQuantity=conn.recv(1024).decode()
-                                ListQuantity[i]=modQuantity
+                                modQuantity = conn.recv(1024).decode()
+                                ListQuantity[i] = modQuantity
                                 totalBill += (int(ListQuantity[i]) * int(menu[ListOrders[i]]['price']))
-                            elif ans=='n':
-                                ListQuantity[i]=0
+                            elif ans == 'n':
+                                ListQuantity[i] = 0
                     else:
                         totalBill += (int(ListQuantity[i]) * int(menu[ListOrders[i]]['price']))
+                        conn.sendall(b'1')
 
-
-
-
-
+                time.sleep(0.2)
+                conn.sendall(b'finish')
                 conn.sendall(str(totalBill).encode())
+
                 ACK = conn.recv(1024).decode()
                 if ACK == '1':
                     addr = conn.recv(1024).decode()

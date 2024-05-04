@@ -1,5 +1,6 @@
 import socket
 import pickle
+import time
 port = 12388
 ip = 'localhost'
 
@@ -17,7 +18,6 @@ def userInterface(sock):
             sock.sendall(b'Owner')
             ownerAuth(sock)
         elif selection == '2':
-            sock.sendall(b'Customer')
             customerAuth(sock)
         elif selection == '3':
             sock.sendall(b'Exit')
@@ -89,6 +89,7 @@ def modifyItem(sock):
 
 def customerAuth(sock):
     try:
+        sock.sendall(b'Customer')
         menuu=retrieveMenu(sock)
 
         loop = 'j'
@@ -97,21 +98,21 @@ def customerAuth(sock):
         match=True
         while loop != 'y':
             match = False
-            print("\033[1;33;40m<+> enter your order:\u001b[0m", end=' ')
+            print("enter your order: ", end=' ')
             cusOrder = input()
             for a in dict(menuu).keys():
                 if a.lower() == cusOrder.lower():
                     match=True
             if match == False:
-                print("\033[1;31;40m<-> There is no\u001b[0m",cusOrder)
+                print("There is no",cusOrder)
                 continue
 
-            print("\033[1;33;40m<+> Enter the quantity:\u001b[0m", end=' ')
+            print("Enter the quantity: ", end=' ')
             cusQuan = input()
             meals += cusOrder + ','
             quantity += cusQuan + ','
             print(meals)
-            print("\033[1;33;40m<+> did you finish(y/n)\u001b[0m", end=' ')
+            print("did you finish(y/n)", end=' ')
             loop = input()
 
 
@@ -119,44 +120,48 @@ def customerAuth(sock):
         sock.sendall(quantity.encode())
         # trace
 
-        totalBill = sock.recv(1024).decode()
-        if totalBill=='Diclined':
-            diclinedOrder=sock.recv(1024).decode()
-            diclinedOrderQuan = sock.recv(1024).decode()
-            print("\033[1;37;40m<#> The\u001b[0m", diclinedOrder, "\033[1;37;40m Avaliable is\u001b[0m" ,diclinedOrderQuan)
-            print("\033[1;37;40m<#> Do you want to order this meal?(y/n): \u001b[0m", end="")
-            ans = input()
-            if ans =="y":
+        msg = sock.recv(1024).decode()
+        c=0
+        while msg!='finish':
+            msg = sock.recv(1024).decode()
+            if msg=='0':
+
+                diclinedOrder=sock.recv(1024).decode()
+                diclinedOrderQuan = sock.recv(1024).decode()
+
+                print("The", diclinedOrder, "Avaliable is" ,diclinedOrderQuan)
+                print("Do you want to order this meal?(y/n): ", end="")
+                ans = input()
+
+                if ans =="y":
                     print("How much Quantity: ", end="")
-                    anq = input("-> ")
-                    while anq>diclinedOrderQuan:
+                    anq = input()
+                    while anq>=diclinedOrderQuan:
                         print("How much Quantity(Enter less than)",diclinedOrderQuan,": ", end="")
                         anq = input()
+
                     sock.sendall(b"y")
                     sock.sendall(anq.encode())
-                    totalBill = sock.recv(1024).decode()
-            elif ans=='n':
-                sock.sendall(b'n')
-                totalBill = sock.recv(1024).decode()
+                elif ans=='n':
+                    sock.sendall(b'n')
 
-
-
-        print("\033[1;37;40m<#> your Bill is\u001b[0m", totalBill, '\033[1;37;40m SAR\u001b[0m')
-        print("\033[1;33;40m<+> Do you confirm your order(y/n)\u001b[0m", end=' ')
+        totalBill = sock.recv(1024).decode()
+        print("your Bill is", totalBill, 'SAR')
+        print("Do you confirm your order(y/n)", end=' ')
         confirm = input()
         if confirm == 'y':
-            print("\033[1;33;40m<+> Put your address: \u001b[0m", end=' ')
+            print("Put your address: ", end=' ')
             addr = input()
             sock.sendall(b'1')
             sock.sendall(addr.encode())
             ACK = sock.recv(1024).decode()
             if ACK == '1':
-                print("\033[1;37;40m<#> Your order has been accepted by the restaurant\u001b[0m")
+                print("Your order has been accepted by the restaurant")
 
 
 
     except:
-        print('\033[1;37;40m<#> There is a problem.\u001b[0m',str(e))   
+        pass
         
 
 def retrieveMenu(sock):
