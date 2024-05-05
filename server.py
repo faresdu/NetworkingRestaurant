@@ -2,6 +2,7 @@ import socket
 import json
 import pickle
 import time
+import sys
 port = 12388
 ip = 'localhost'
 
@@ -121,14 +122,13 @@ def main():
 
                 ACK = conn.recv(1024).decode()
                 if ACK == '1':
-                    addr = conn.recv(1024).decode()
-                    c = 0
                     for i in range(len(ListOrders)):
                         NewQuantity = int(menu[ListOrders[i]]["quantity"]) - int(ListQuantity[i])
                         menu[ListOrders[i]]["quantity"] = NewQuantity
                     conn.sendall(b'1')
-                    with open('menu.json', 'w') as file:
-                        json.dump(menu, file)
+                    update_menu('menu.json',menu)
+                elif ACK == '0':
+                    main()
 
                
             elif data == 'Owner':
@@ -152,14 +152,15 @@ def main():
                     ACK = '0'
                     conn.sendall(ACK.encode())
             elif data == 'Exit':
-                break
+                sys.exit()
+            
             else:
                 ACK = '-1'
                 conn.sendall(ACK.encode())
             
 
-    except:
-        print("\033[1;31;40m Error on server side")
+    except Exception as e:
+        print("\033[1;31;40m Error on server side",str(e))
 
 if __name__ == '__main__':
     main()

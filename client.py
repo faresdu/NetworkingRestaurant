@@ -119,9 +119,7 @@ def customerAuth(sock):
         sock.sendall(meals.encode())
         sock.sendall(quantity.encode())
         # trace
-
         msg = sock.recv(1024).decode()
-        c=0
         while msg!='finish':
             msg = sock.recv(1024).decode()
             if msg=='0':
@@ -129,15 +127,15 @@ def customerAuth(sock):
                 diclinedOrder=sock.recv(1024).decode()
                 diclinedOrderQuan = sock.recv(1024).decode()
 
-                print("The", diclinedOrder, "Avaliable is" ,diclinedOrderQuan)
-                print("Do you want to order this meal?(y/n): ", end="")
+                print(f"The Avaliable {diclinedOrder} is {diclinedOrderQuan}")
+                print(f"You still want to order {diclinedOrder}?(y/n): ", end="")
                 ans = input()
 
                 if ans =="y":
-                    print("How much Quantity: ", end="")
+                    print("How many? ", end="")
                     anq = input()
                     while anq>=diclinedOrderQuan:
-                        print("How much Quantity(Enter less than)",diclinedOrderQuan,": ", end="")
+                        print(f"Please Enter less than {diclinedOrderQuan}: ", end="")
                         anq = input()
 
                     sock.sendall(b"y")
@@ -157,6 +155,8 @@ def customerAuth(sock):
             ACK = sock.recv(1024).decode()
             if ACK == '1':
                 print("Your order has been accepted by the restaurant")
+        elif confirm == 'n':
+            sock.sendall(b'0')
 
 
 
@@ -167,18 +167,18 @@ def customerAuth(sock):
 def retrieveMenu(sock):
     data = sock.recv(1024)
     data = pickle.loads(data)
-    print('\033[1;37;40m =============================== \u001b[0m')
-    print('\033[1;37;40m = meals             price(SAR)= \u001b[0m')
+    print('\033[1;36;40m =============================== \u001b[0m')
+    print('\033[1;36;40m = \u001b[0m \033[1;37;40mmeals             price(SAR)\u001b[0m \033[1;36;40m= \u001b[0m')
     for i,k in data.items():
-        print('=',i,end='')
+        print('\033[1;36;40m = \u001b[0m',i,end='')
         for l in range(0,18-len(str(i))):
             print(end=' ')
         print(k['price'],end='')
         for l in range(0, 10 - len(str(k['price']))):
             print(end=' ')
 
-        print("\033[1;37;40m = \u001b[0m")
-    print('\033[1;37;40m =============================== \u001b[0m')
+        print("\033[1;36;40m = \u001b[0m")
+    print('\033[1;36;40m =============================== \u001b[0m')
     return data
 
 def ownerAuth(sock):

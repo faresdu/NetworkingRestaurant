@@ -1,1 +1,58 @@
-{"Kabsah": {"price": 100.0, "quantity": 199}, "Mandi": {"price": 35.0, "quantity": 90}, "Madghoot": {"price": 39.0, "quantity": 76.0}, "Bukhary": {"price": 25.0, "quantity": 111}, "Jareesh": {"price": 14.0, "quantity": 250}, "Qursan": {"price": 15.0, "quantity": 243}, "Sambosa": {"price": 6.0, "quantity": 432}, "Daqoos": {"price": 3.0, "quantity": 500}, "7Up": {"price": 3.0, "quantity": 500}, "Pepsi": {"price": 3.0, "quantity": -99843}, "Miranda": {"price": 3.0, "quantity": 500}, "Dew": {"price": 3.0, "quantity": 92}, "water": {"price": 1.0, "quantity": 500}, "djaj": {"price": 100.0, "quantity": 95}, "l7m": {"price": 200.0, "quantity": 56}}
+{
+    "Kabsah": {
+        "price": 100.0,
+        "quantity": 186
+    },
+    "Mandi": {
+        "price": 35.0,
+        "quantity": 90
+    },
+    "Madghoot": {
+        "price": 39.0,
+        "quantity": 76.0
+    },
+    "Bukhary": {
+        "price": 25.0,
+        "quantity": 111
+    },
+    "Jareesh": {
+        "price": 14.0,
+        "quantity": 250
+    },
+    "Qursan": {
+        "price": 15.0,
+        "quantity": 243
+    },
+    "Sambosa": {
+        "price": 6.0,
+        "quantity": 432
+    },
+    "Daqoos": {
+        "price": 3.0,
+        "quantity": 500
+    },
+    "7Up": {
+        "price": 3.0,
+        "quantity": 500
+    },
+    "Pepsi": {
+        "price": 3.0,
+        "quantity": -99843
+    },
+    "Miranda": {
+        "price": 3.0,
+        "quantity": 488
+    },
+    "Dew": {
+        "price": 3,
+        "quantity": 76
+    },
+    "water": {
+        "price": 1.0,
+        "quantity": 500
+    },
+    "djaj": {
+        "price": 99,
+        "quantity": 17
+    }
+}
