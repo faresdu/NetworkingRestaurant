@@ -1,7 +1,7 @@
 {
     "Kabsah": {
         "price": 100.0,
-        "quantity": 186
+        "quantity": 174
     },
     "Mandi": {
         "price": 35.0,
@@ -21,11 +21,11 @@
     },
     "Qursan": {
         "price": 15.0,
-        "quantity": 243
+        "quantity": 3
     },
     "Sambosa": {
         "price": 6.0,
-        "quantity": 432
+        "quantity": 429
     },
     "Daqoos": {
         "price": 3.0,
@@ -33,7 +33,7 @@
     },
     "7Up": {
         "price": 3.0,
-        "quantity": 500
+        "quantity": 499
     },
     "Pepsi": {
         "price": 3.0,
@@ -46,13 +46,5 @@
     "Dew": {
         "price": 3,
         "quantity": 76
-    },
-    "water": {
-        "price": 1.0,
-        "quantity": 500
-    },
-    "djaj": {
-        "price": 99,
-        "quantity": 17
     }
 }
