@@ -1,6 +1,8 @@
 import socket
 import pickle
 import time
+import sys
+import getpass
 port = 12388
 ip = 'localhost'
 
@@ -98,24 +100,24 @@ def customerAuth(sock):
         match=True
         while loop != False:
             match = False
-            print("enter your order: ", end=' ')
-            cusOrder = input()
+            print("\033[1;33;40m<+> Enter your order\n\u001b[0m ", end=' ')
+            cusOrder = input('-> ')
             for a in dict(menuu).keys():
                 if a.lower() == cusOrder.lower():
                     match=True
             if match == False:
-                print("There is no",cusOrder)
+                print(f"\033[1;31;40m<-> There is no {cusOrder}\u001b[0m")
                 continue
 
-            print("Enter the quantity: ", end=' ')
-            cusQuan = input()
+            print("\033[1;33;40m<+> Enter the quantity\n\u001b[0m ", end=' ')
+            cusQuan = input('-> ')
             meals += cusOrder + ','
             quantity += cusQuan + ','
             print(meals)
             ans=''
             while ans != 'n' and ans != 'y':
-                print("did you finish(y/n)", end=' ')
-                ans = input()
+                print("\033[1;33;40m<+> Did you finish(y/n)\n\u001b[0m", end=' ')
+                ans = input('-> ')
             if ans=='y':
                 loop=False
 
@@ -133,18 +135,18 @@ def customerAuth(sock):
                 diclinedOrder=sock.recv(1024).decode()
                 diclinedOrderQuan = sock.recv(1024).decode()
 
-                print("The", diclinedOrder, "Avaliable is" ,diclinedOrderQuan)
+                print(f"\033[1;31;40m<-> The Avaliable {diclinedOrder} is {diclinedOrderQuan} only!\u001b[0m")
                 ans=''
                 while ans!='n' and ans!='y':
-                    print("Do you want to order this meal?(y/n): ", end="")
-                    ans = input()
+                    print(f"\033[1;33;40m<+> Do you want to order {diclinedOrder}?(y/n)\n\u001b[0m ", end="")
+                    ans = input('-> ')
 
                 if ans =="y":
-                    print("How much Quantity: ", end="")
-                    anq = input()
+                    print(f"\033[1;33;40m<+> How many {diclinedOrder} do you need? (Amount has to be less than {diclinedOrderQuan})\n\u001b[0m ", end="")
+                    anq = input('-> ')
                     while anq>=diclinedOrderQuan:
-                        print("How much Quantity(Enter less than)",diclinedOrderQuan,": ", end="")
-                        anq = input()
+                        print(f"\033[1;33;40m<+> How many Quantity (Enter less than {diclinedOrderQuan})\n\u001b[0m", end="")
+                        anq = input('-> ')
 
                     sock.sendall(b"y")
                     sock.sendall(anq.encode())
@@ -154,28 +156,39 @@ def customerAuth(sock):
         totalBill = sock.recv(1024).decode()
 
         if int(totalBill)==0:
-            print("Thank you")
+            print("\033[1;34;40m<#> Thank you\u001b[0m")
             sock.sendall(b'0')
         else:
-            print("your Bill is", totalBill, 'SAR')
+            print(f"\033[1;37;40m<#> Your Bill is {totalBill} SAR\u001b[0m")
             confirm=''
             while confirm!='n' and confirm!='y':
-                print("Do you confirm your order(y/n)", end=' ')
-                confirm = input()
+                print("\033[1;33;40m<+> Do you confirm your order(y/n)\n\u001b[0m", end=' ')
+                confirm = input('-> ')
             if confirm == 'y':
-                print("Put your address: ", end=' ')
-                addr = input()
+                print("\033[1;33;40m<+> Enter your address\n\u001b[0m ", end=' ')
+                addr = input('-> ')
                 sock.sendall(b'1')
                 sock.sendall(addr.encode())
                 ACK = sock.recv(1024).decode()
                 if ACK == '1':
-                    print("Your order has been accepted by the restaurant")
+                    print(f"\033[1;34;40m<#> Your order has been accepted by the restaurant and will be delivered to {addr}\u001b[0m")
+                    toolbar_width = 40
+                    print('<#> Leaving to main screen')
+                    sys.stdout.write("[%s]" % (" " * toolbar_width))
+                    sys.stdout.flush()
+                    sys.stdout.write("\b" * (toolbar_width+1)) 
+                    
+                    for i in range(toolbar_width):
+                        time.sleep(0.1) 
+                        sys.stdout.write("■")
+                        sys.stdout.flush()
 
+                    sys.stdout.write("]\n") 
             elif confirm == 'n':
                 sock.sendall(b'0')
 
-    except:
-        pass
+    except Exception as e:
+        print(f"\033[1;31;40m<-> Something went wrong! {str(e)}\u001b[0m")
         
 
 def retrieveMenu(sock):
@@ -183,18 +196,18 @@ def retrieveMenu(sock):
     data = pickle.loads(data)
 
 
-    print('\033[1;37;40m =============================== \u001b[0m')
-    print('\033[1;37;40m = meals             price(SAR)= \u001b[0m')
+    print('\033[1;36;40m =============================== \u001b[0m')
+    print('\033[1;36;40m =\u001b[0m meals             price(SAR)\033[1;36;40m =\u001b[0m')
     for i,k in data.items():
-        print('=',i,end='')
+        print('\033[1;36;40m =\u001b[0m',i,end='')
         for l in range(0,18-len(str(i))):
             print(end=' ')
         print(k['price'],end='')
         for l in range(0, 10 - len(str(k['price']))):
             print(end=' ')
 
-        print("\033[1;37;40m = \u001b[0m")
-    print('\033[1;37;40m =============================== \u001b[0m')
+        print("\033[1;36;40m = \u001b[0m")
+    print('\033[1;36;40m =============================== \u001b[0m')
     return data
 
 def ownerAuth(sock):
@@ -203,7 +216,7 @@ def ownerAuth(sock):
             username = input('->')
             sock.sendall(username.encode())
             print('\033[1;33;40m<+> Enter your password:\u001b[0m')
-            password = input('->')
+            password = getpass.getpass(prompt='(Password is hidden)-> ')
             sock.sendall(password.encode())
             ackClient = sock.recv(1024).decode()
             if ackClient == '1':
